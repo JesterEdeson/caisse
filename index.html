@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="ar-MA">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Caisse w Stock</title>
+<meta name="theme-color" content="#2f3fbf">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Caisse">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+--bg:#eceff8;--card:#fff;--ink:#0f1836;--mute:#6a7391;--line:#dde2f0;--acc:#2f3fbf;--in:#0a8a5b;--out:#d2481f;--accInk:#fff}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0b1024;--card:#141b38;--ink:#eaedfa;--mute:#8e97bd;--line:#252e57;--acc:#8d9cff;--in:#3ddc9b;--out:#ff8a65;--accInk:#0b1024}}
+:root[data-theme="dark"]{--bg:#0b1024;--card:#141b38;--ink:#eaedfa;--mute:#8e97bd;--line:#252e57;--acc:#8d9cff;--in:#3ddc9b;--out:#ff8a65;--accInk:#0b1024}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*:before,*:after{box-sizing:inherit}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 "Manrope","Segoe UI",system-ui,Roboto,sans-serif;font-variant-numeric:tabular-nums}
+button,input{font-family:inherit}
+body{background-image:radial-gradient(circle at 10% 6%,rgba(47,63,191,.13) 0 170px,transparent 171px),radial-gradient(circle at 94% 72%,rgba(245,179,32,.16) 0 150px,transparent 151px);background-attachment:fixed}
+#hc{display:none}
+#hc small{display:block;font-size:15px;font-weight:700;color:var(--mute);text-transform:capitalize}
+#hc strong{display:block;font-size:54px;font-weight:800;line-height:1.1;color:var(--in);margin:6px 0 2px;letter-spacing:-.02em}
+#hc span{font-size:14px;font-weight:600;color:var(--mute)}
+body:not(.home) #hc{display:none}
+@keyframes pop{from{opacity:0;transform:translateX(-50%) translateY(-8px) scale(.97)}to{opacity:1;transform:translateX(-50%)}}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:no-preference){.tabs:not([hidden]){animation:pop .16s ease-out}#p1:not([hidden]),#p2:not([hidden]),#p3:not([hidden]){animation:fade .25s ease-out}}
+button:active{transform:scale(.98)}
+@media (prefers-reduced-motion:no-preference){button{transition:transform .08s}}
+.hero{background-color:var(--acc);background-image:radial-gradient(circle at 94% 14%,rgba(255,255,255,.14) 0 52px,transparent 53px),radial-gradient(circle at 80% 96%,rgba(245,179,32,.5) 0 24px,transparent 25px);color:var(--accInk);border:0}
+.hero .add{background:#f5b320;color:#1a1400}
+h2.in:before,h2.out:before{content:"";display:inline-block;width:9px;height:9px;border-radius:50%;background:currentColor;margin-right:8px;vertical-align:1px}
+#hint:not(:empty){background:var(--bg);border-radius:12px;padding:12px 14px}
+main{max-width:520px;margin:0 auto;padding:14px 14px 60px}
+.top{position:relative;display:flex;align-items:flex-start;justify-content:center;margin-bottom:16px}
+body.home .top{min-height:75vh;align-items:center}
+#th{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:10;width:54px;height:54px;justify-content:center;border-radius:50%;box-shadow:0 10px 24px -8px rgba(15,24,54,.5)}
+.menu{position:relative}
+#mb,#th{display:flex;align-items:center;gap:8px;padding:12px 16px;border:1.5px solid var(--line);border-radius:14px;background:var(--card);color:var(--ink);font-size:17px;font-weight:800}
+#th{padding:0;font-size:24px}
+#mb{padding:18px 34px;font-size:24px;border-radius:20px;gap:14px;border:0;justify-content:center;color:var(--accInk);background:var(--acc);background:linear-gradient(135deg,var(--acc),color-mix(in srgb,var(--acc) 65%,#a855f7));box-shadow:0 16px 30px -12px var(--acc)}
+.tabs{position:absolute;top:calc(100% + 8px);left:50%;transform:translateX(-50%);z-index:5;min-width:240px;display:flex;flex-direction:column;gap:2px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:6px;box-shadow:0 16px 32px -12px rgba(15,24,54,.4)}
+.tabs[hidden]{display:none}
+
+
+
+
+
+.tabs button{padding:16px 18px;border:0;background:none;color:var(--ink);border-radius:12px;font-size:19px;font-weight:700;text-align:center}
+.tabs button.on{background:var(--acc);color:var(--accInk)}
+section{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:18px;margin-bottom:14px;box-shadow:0 10px 24px -18px rgba(15,24,54,.35)}
+h2{margin:0 0 12px;font-size:16px;font-weight:800}
+label{display:block;font-size:13px;font-weight:600;color:var(--mute);margin-bottom:6px}
+input{width:100%;padding:13px 14px;border:1.5px solid var(--line);border-radius:12px;background:var(--bg);color:var(--ink);font-size:17px;font-weight:600}
+input:focus,button:focus-visible{outline:2px solid var(--acc);outline-offset:1px}
+.row{display:flex;gap:8px;margin-bottom:8px}
+.row>*{flex:1;min-width:0}
+.amt{display:flex;gap:8px}
+.amt span{flex:0 0 68px;display:flex;align-items:center;justify-content:center;border:1.5px solid var(--line);border-radius:12px;background:var(--bg);color:var(--acc);font-weight:800}
+.add{padding:14px 18px;border:0;border-radius:14px;background:var(--acc);color:var(--accInk);font-weight:800;font-size:16px;flex:0 0 auto}
+.item{display:flex;align-items:center;gap:8px;padding:9px 0;border-top:1px solid var(--line)}
+.item .n{flex:1;min-width:0;overflow-wrap:anywhere}
+.item .n small{display:block;color:var(--mute)}
+.item b{white-space:nowrap}
+.x{border:0;background:none;color:var(--mute);font-size:20px;padding:2px 8px}
+.tot{display:flex;justify-content:space-between;padding:6px 0;font-size:17px}
+.big{font-size:22px;font-weight:800;border-top:2px solid var(--ink);margin-top:6px;padding-top:10px}
+.in{color:var(--in)}.out{color:var(--out)}
+.empty{color:var(--mute);font-size:14px;margin:4px 0}
+.hist button,.hist .dayc{display:block;width:100%;text-align:left;padding:10px 12px;margin-top:8px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);font-size:15px}
+.hist .dd{display:block;font-weight:700;margin-bottom:6px;text-transform:capitalize}
+.hist .eq{display:flex;align-items:flex-end;justify-content:space-between;gap:6px}
+.hist .eq div{min-width:0}
+.hist .eq small{display:block;color:var(--mute);font-size:12px}
+.hist .eq b{white-space:nowrap;font-size:15px}
+.hist .op{color:var(--mute);font-weight:700}
+</style>
+</head>
+<body class="home">
+<main>
+<header class="top">
+<div class="menu"><div id="hc"><small id="hd"></small><strong id="hv"></strong><span>Rbah dyal lyoum</span></div><button id="mb" aria-haspopup="true" aria-expanded="false"><span id="mt">Menu</span><span aria-hidden="true">▾</span></button>
+<div class="tabs" id="mm" hidden><button id="t1">7sab ta3 nhar</button><button id="t3">7sab ta3 chhar</button><button id="t2">Sel3a</button></div></div>
+<button id="th" aria-label="Dark mode / Light mode">🌙</button>
+</header>
+
+<div id="p1" hidden>
+<section class="hero">
+<div id="dl" style="font-size:26px;font-weight:800;line-height:1.15;text-transform:capitalize;margin-bottom:14px"></div><input type="hidden" id="d"><button class="add" id="tdy" hidden style="padding:8px 12px;font-size:14px">Rje3 l lyoum</button>
+</section>
+
+<section>
+<h2>La caisse</h2>
+<label for="b">Chhal ba9i f la caisse</label><div class="amt"><input type="number" inputmode="decimal" id="b" placeholder="0"><span>DH</span></div><p id="hint" style="font-size:18px;font-weight:700;margin:10px 0 0"></p>
+</section>
+
+<section>
+<h2 class="in">Dkhl</h2>
+<label for="inA">Chhal dkhlti f had nhar</label>
+<div class="amt"><input id="inA" type="number" inputmode="decimal" placeholder="0"><span>DH</span></div>
+</section>
+
+<section>
+<h2 class="out">Sel3a li chriti</h2>
+<label for="outN">Smiya dyal sel3a</label><input id="outN" placeholder="Chno chriti" style="margin-bottom:10px">
+<label for="outA">Taman</label><div class="amt" style="margin-bottom:12px"><input id="outA" type="number" inputmode="decimal" placeholder="0"><span>DH</span></div>
+<button class="add" id="outB" style="width:100%;margin-bottom:10px">Zid sel3a</button>
+<div id="outL"></div>
+</section>
+
+<section>
+<h2>Hssab dyal nhar</h2>
+<div class="tot"><span>Sel3a li chriti</span><b class="out" id="sOut"></b></div>
+<div class="tot"><span>Rbah dyal nhar</span><b class="in" id="sProf"></b></div>
+<div class="tot big"><span>Majmou3 dyalhom bjoj</span><b id="sBoth"></b></div>
+<div class="tot" style="display:none;margin-top:12px;border-top:1px dashed var(--line);padding-top:14px"><span id="mTL" style="text-transform:capitalize"></span><b id="mT" style="font-size:22px"></b></div>
+
+</section>
+
+<section class="hist"><h2>Ayam li douzti</h2><div id="hist"></div></section>
+</div>
+
+<div id="p2" hidden>
+<section>
+<h2>Zid sel3a</h2>
+<label for="sN">Smiya dyal sel3a</label><input id="sN" placeholder="Chno hiya sel3a" style="margin-bottom:12px">
+<label for="sQ">Quantité</label><input id="sQ" type="number" inputmode="decimal" placeholder="0" style="margin-bottom:12px">
+<label for="sP">Taman dyal wa7da</label><div class="amt" style="margin-bottom:14px"><input id="sP" type="number" inputmode="decimal" placeholder="0"><span>DH</span></div>
+<button class="add" id="sB" style="width:100%">Zid l sel3a</button>
+</section>
+<section>
+<h2>Sel3a</h2>
+<div id="sL"></div>
+<div class="tot big"><span>Majmou3 dyal sel3a</span><b id="sT"></b></div>
+</section>
+</div>
+
+<div id="p3" hidden>
+<section>
+<div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+<button class="add" id="mp" aria-label="Chhar li douz">‹</button>
+<h2 id="ml" style="margin:0;text-transform:capitalize;text-align:center"></h2>
+<button class="add" id="mn" aria-label="Chhar jay">›</button>
+</div>
+</section>
+<section>
+<div class="tot big" style="border-top:0;margin-top:0;padding-top:0"><span>Majmou3 dyal chhar</span><b id="mAll"></b></div>
+</section>
+<section style="display:none">
+<h2>Hssab dyal chhar</h2>
+<div class="tot"><span>Sel3a li chriti</span><b class="out" id="mO"></b></div>
+<div class="tot"><span>Rbah dyal chhar</span><b class="in" id="mI"></b></div>
+<div class="tot big"><span>Majmou3 dyalhom bjoj</span><b id="mB"></b></div>
+</section>
+<section style="display:none">
+<div class="tot"><span>Taman dyal stock daba</span><b id="mS"></b></div>
+</section>
+<section class="hist"><h2>Ayam dyal chhar</h2><div id="mD"></div></section>
+</div>
+</main>
+<script>
+var $=function(i){return document.getElementById(i)};
+function ld(k,f){try{var v=localStorage.getItem(k);return v?JSON.parse(v):f}catch(e){return f}}
+function sv(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+function m(n){return (Math.round(n*100)/100).toLocaleString('fr-FR')+' DH'}
+var days=ld('days',{}),stock=ld('stock',[]),base=ld('base',5000);
+function tod(){var t=new Date();return new Date(t-t.getTimezoneOffset()*60000).toISOString().slice(0,10)}var today=tod();
+$('d').value=today;
+function day(){var k=$('d').value||today;if(!days[k])days[k]={i:[],o:[]};return days[k]}
+function sum(a){return a.reduce(function(s,x){return s+x.a},0)}
+function list(id,arr,kind){
+  $(id).innerHTML=arr.length?arr.map(function(x,j){return '<div class="item"><span class="n">'+esc(x.n||'—')+'</span><b>'+m(x.a)+'</b><button class="x" aria-label="Mse7" data-k="'+kind+'" data-j="'+j+'">×</button></div>'}).join(''):'<p class="empty">Mazal walo.</p>';
+}
+function render(){
+  var dv=$('d').value;$('tdy').hidden=(dv===today);if(dv)$('dl').textContent=new Date(dv+'T00:00:00').toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long',year:'numeric'});var td=days[today];$('hv').textContent=m(td?sum(td.i):0);$('hd').textContent=new Date(today+'T00:00:00').toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'});var d=day(),i=sum(d.i),o=sum(d.o),p=i-o;
+  list('outL',d.o,'o');
+  $('sOut').textContent=m(o);$('sBoth').textContent=m(i+o);
+  var mk=(dv||today).slice(0,7),mt=0;Object.keys(days).forEach(function(k){if(k.slice(0,7)===mk)mt+=sum(days[k].i)+sum(days[k].o)});$('mT').textContent=m(mt);$('mTL').textContent='Majmou3 dyal '+new Date(mk+'-01T00:00:00').toLocaleDateString('fr-FR',{month:'long'});
+  $('sProf').textContent=m(i);
+  $('sProf').className='in';
+  var c=parseFloat($('b').value);$('hint').textContent=isNaN(c)?'':c>BASE?'7yd '+m(c-BASE)+' mn la caisse.':c<BASE?'Zid '+m(BASE-c)+' f la caisse.':'La caisse m9ada: '+m(BASE)+'.';
+  var ks=Object.keys(days).filter(function(k){return days[k].i.length||days[k].o.length}).sort().reverse().slice(0,30);
+  $('hist').innerHTML=ks.length?ks.map(function(k){var r=sum(days[k].i),o=sum(days[k].o);var dt=new Date(k+'T00:00:00').toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'});return '<button data-d="'+k+'"><span class="dd">'+dt+'</span><div class="eq"><div><small>Sel3a</small><b class="out">'+m(o)+'</b></div><span class="op">+</span><div><small>Rbah</small><b class="in">'+m(r)+'</b></div><span class="op">=</span><div><small>Majmou3</small><b>'+m(o+r)+'</b></div></div></button>'}).join(''):'<p class="empty">Mazal walo.</p>';
+  var t=0;
+  $('sL').innerHTML=stock.length?stock.map(function(x,j){var l=x.q*x.p;t+=l;if(j===editIdx)return '<div class="item" style="flex-direction:column;align-items:stretch"><b style="white-space:normal">'+esc(x.n)+'</b><div class="row"><div><label for="eQ">Quantité</label><input id="eQ" type="number" inputmode="decimal" value="'+x.q+'"></div><div><label for="eP">Taman (DH)</label><input id="eP" type="number" inputmode="decimal" value="'+x.p+'"></div></div><div class="row"><button class="add" style="flex:1" data-k="es" data-j="'+j+'">Save</button><button class="add" style="flex:1;background:var(--out)" data-k="ec" data-j="'+j+'">Cancel</button></div></div>';return '<div class="item"><span class="n">'+esc(x.n)+'<small>'+x.q+' × '+m(x.p)+'</small></span><b>'+m(l)+'</b><button class="x" aria-label="Beddel" data-k="e" data-j="'+j+'">✎</button><button class="x" aria-label="Mse7" data-k="s" data-j="'+j+'">×</button></div>'}).join(''):'<p class="empty">Mazal ma zdti walo.</p>';
+  $('sT').textContent=m(t);renderM(t);
+}
+function addTo(kind,nId,aId){
+  var a=parseFloat($(aId).value);if(!(a>0)){$(aId).focus();return}
+  day()[kind].push({n:$(nId).value.trim(),a:a});sv('days',days);
+  $(nId).value='';$(aId).value='';render();$(nId).focus();
+}
+var editIdx=-1;var mon=today.slice(0,7);var BASE=5000;function loadIn(){var dd=day(),s=sum(dd.i);$('inA').value=s?s:'';$('b').value=(dd.c===null||dd.c===undefined)?'':dd.c}
+$('inA').oninput=function(){var v=parseFloat($('inA').value);day().i=v>0?[{n:'',a:v}]:[];sv('days',days);render()};
+$('outB').onclick=function(){addTo('o','outN','outA')};
+$('sB').onclick=function(){
+  var n=$('sN').value.trim(),q=parseFloat($('sQ').value),p=parseFloat($('sP').value);
+  if(!n){$('sN').focus();return}if(!(q>=0)){$('sQ').focus();return}if(!(p>=0)){$('sP').focus();return}
+  stock.push({n:n,q:q,p:p});sv('stock',stock);$('sN').value=$('sQ').value=$('sP').value='';render();$('sN').focus();
+};
+document.addEventListener('click',function(e){
+  var t=e.target;
+  if(t.dataset&&t.dataset.k){
+    var j=+t.dataset.j,k=t.dataset.k;
+    if(k==='e'){editIdx=j}else if(k==='ec'){editIdx=-1}else if(k==='es'){var q=parseFloat($('eQ').value),p=parseFloat($('eP').value);if(!(q>=0)||!(p>=0))return;stock[j].q=q;stock[j].p=p;sv('stock',stock);editIdx=-1}else if(k==='s'){stock.splice(j,1);sv('stock',stock);editIdx=-1}else{day()[k].splice(j,1);sv('days',days)}
+    render();
+  }
+  var h=t.closest&&t.closest('[data-d]');if(h){$('d').value=h.dataset.d;loadIn();render();window.scrollTo(0,0)}
+});
+$('d').onchange=function(){loadIn();render()};
+$('tdy').onclick=function(){$('d').value=today;loadIn();render()};
+function tick(){var n=tod();if($('d').value===today&&n!==today){today=n;$('d').value=n;loadIn();render()}else if(n!==today){today=n;render()}}
+setInterval(tick,30000);document.addEventListener('visibilitychange',tick);
+$('b').oninput=function(){var v=parseFloat($('b').value);day().c=isNaN(v)?null:v;sv('days',days);render()};
+function renderM(st){
+  var ks=Object.keys(days).filter(function(k){return k.slice(0,7)===mon&&(days[k].i.length||days[k].o.length)}).sort().reverse();
+  var I=0,O=0;
+  var rows=ks.map(function(k){var r=sum(days[k].i),o=sum(days[k].o);I+=r;O+=o;var dt=new Date(k+'T00:00:00').toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'});return '<div class="dayc"><span class="dd">'+dt+'</span><div class="eq"><div><small>Sel3a</small><b class="out">'+m(o)+'</b></div><span class="op">+</span><div><small>Rbah</small><b class="in">'+m(r)+'</b></div><span class="op">=</span><div><small>Majmou3</small><b>'+m(o+r)+'</b></div></div></div>'});
+  $('ml').textContent=new Date(mon+'-01T00:00:00').toLocaleDateString('fr-FR',{month:'long',year:'numeric'});
+  $('mO').textContent=m(O);$('mI').textContent=m(I);$('mB').textContent=m(I+O);$('mAll').textContent=m(I+O);$('mS').textContent=m(st);
+  $('mD').innerHTML=rows.length?rows.join(''):'<p class="empty">Mazal walo f had chhar.</p>';
+}
+function sh(n){var p=mon.split('-'),d=new Date(+p[0],+p[1]-1+n,1);mon=d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2);render()}
+function tab(n){$('p1').hidden=n!==1;$('p2').hidden=n!==2;$('p3').hidden=n!==3;$('t1').className=n===1?'on':'';$('t2').className=n===2?'on':'';$('t3').className=n===3?'on':'';$('mm').hidden=true;$('mb').setAttribute('aria-expanded','false');$('mt').textContent=['','7sab ta3 nhar','Sel3a','7sab ta3 chhar'][n];document.body.classList.remove('home')}
+$('t1').onclick=function(){tab(1)};$('t2').onclick=function(){tab(2)};$('t3').onclick=function(){tab(3)};
+$('mp').onclick=function(){sh(-1)};$('mn').onclick=function(){sh(1)};
+$('mb').onclick=function(){var h=$('mm').hidden;$('mm').hidden=!h;$('mb').setAttribute('aria-expanded',h?'true':'false')};
+
+document.addEventListener('click',function(e){if(!e.target.closest('.menu'))$('mm').hidden=true});
+function eff(){var t=document.documentElement.getAttribute('data-theme');return t||(window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light')}
+function ico(){$('th').textContent=eff()==='dark'?'☀️':'🌙'}
+(function(){var t=ld('theme',null);if(t)document.documentElement.setAttribute('data-theme',t);ico()})();
+$('th').onclick=function(){var n=eff()==='dark'?'light':'dark';document.documentElement.setAttribute('data-theme',n);sv('theme',n);ico()};
+loadIn();render();
+</script>
+</body>
+</html>
